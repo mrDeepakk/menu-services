@@ -1,0 +1,460 @@
+{
+    "info": {
+        "name": "Menu & Services API - Complete Collection",
+        "description": "Complete API testing with automatic ID chaining\n\n**Testing Flow:**\n1. Health Check\n2. Categories → Subcategories → Items → Bookings\n3. All IDs auto-saved!\n\n**Features:**\n- Tax inheritance demo\n- 5 pricing types\n- Booking conflict prevention\n- Complete CRUD for all entities",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:3000/api/v1"
+        },
+        {
+            "key": "categoryId",
+            "value": ""
+        },
+        {
+            "key": "subcategoryId",
+            "value": ""
+        },
+        {
+            "key": "itemId",
+            "value": ""
+        },
+        {
+            "key": "bookingId",
+            "value": ""
+        }
+    ],
+    "item": [
+        {
+            "name": "🏥 Health Check",
+            "request": {
+                "method": "GET",
+                "header": [],
+                "url": "{{baseUrl}}/health"
+            }
+        },
+        {
+            "name": "📁 Categories",
+            "item": [
+                {
+                    "name": "Create Category",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "  pm.collectionVariables.set('categoryId', pm.response.json().data._id);",
+                                    "  console.log('✅ Category ID:', pm.response.json().data._id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Food & Beverages\",\n  \"description\": \"All food and drink items\",\n  \"tax_applicable\": true,\n  \"tax_percentage\": 18\n}"
+                        },
+                        "url": "{{baseUrl}}/categories"
+                    }
+                },
+                {
+                    "name": "List Categories",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/categories?page=1&limit=10"
+                    }
+                },
+                {
+                    "name": "Get Category by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/categories/{{categoryId}}"
+                    }
+                },
+                {
+                    "name": "Update Category Tax",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"tax_percentage\": 12\n}"
+                        },
+                        "url": "{{baseUrl}}/categories/{{categoryId}}"
+                    }
+                },
+                {
+                    "name": "Delete Category",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/categories/{{categoryId}}"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "📂 Subcategories",
+            "item": [
+                {
+                    "name": "Create Subcategory",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "  pm.collectionVariables.set('subcategoryId', pm.response.json().data._id);",
+                                    "  console.log('✅ Subcategory ID:', pm.response.json().data._id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Vegetarian\",\n  \"description\": \"Vegetarian dishes\",\n  \"category_id\": \"{{categoryId}}\"\n}"
+                        },
+                        "url": "{{baseUrl}}/subcategories"
+                    }
+                },
+                {
+                    "name": "List Subcategories",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/subcategories?page=1&limit=10"
+                    }
+                },
+                {
+                    "name": "Filter by Category",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/subcategories?category_id={{categoryId}}"
+                    }
+                },
+                {
+                    "name": "Get Subcategory by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/subcategories/{{subcategoryId}}"
+                    }
+                },
+                {
+                    "name": "Update Subcategory",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"description\": \"Updated description\",\n  \"tax_applicable\": true,\n  \"tax_percentage\": 5\n}"
+                        },
+                        "url": "{{baseUrl}}/subcategories/{{subcategoryId}}"
+                    }
+                },
+                {
+                    "name": "Delete Subcategory",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/subcategories/{{subcategoryId}}"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "🍽️ Items",
+            "item": [
+                {
+                    "name": "Create - Static Price",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "  pm.collectionVariables.set('itemId', pm.response.json().data._id);",
+                                    "  console.log('✅ Item ID:', pm.response.json().data._id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Paneer Tikka\",\n  \"description\": \"Grilled cottage cheese with spices\",\n  \"subcategory_id\": \"{{subcategoryId}}\",\n  \"pricing_type\": \"static\",\n  \"pricing_details\": {\n    \"static_price\": 250\n  }\n}"
+                        },
+                        "url": "{{baseUrl}}/items"
+                    }
+                },
+                {
+                    "name": "Create - Tiered Pricing",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Bulk Samosas\",\n  \"description\": \"Quantity discounts available\",\n  \"subcategory_id\": \"{{subcategoryId}}\",\n  \"pricing_type\": \"tiered\",\n  \"pricing_details\": {\n    \"tiers\": [\n      {\"min_quantity\": 1, \"max_quantity\": 10, \"price_per_unit\": 20},\n      {\"min_quantity\": 11, \"max_quantity\": 50, \"price_per_unit\": 18},\n      {\"min_quantity\": 51, \"max_quantity\": 100, \"price_per_unit\": 15}\n    ]\n  }\n}"
+                        },
+                        "url": "{{baseUrl}}/items"
+                    }
+                },
+                {
+                    "name": "Create - Bookable Item",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"name\": \"Conference Room A\",\n  \"description\": \"Hourly booking with equipment\",\n  \"subcategory_id\": \"{{subcategoryId}}\",\n  \"pricing_type\": \"static\",\n  \"pricing_details\": {\"static_price\": 500},\n  \"is_bookable\": true,\n  \"availability\": {\n    \"days\": [\"monday\", \"tuesday\", \"wednesday\", \"thursday\", \"friday\"],\n    \"time_slots\": [\n      {\"start_time\": \"09:00\", \"end_time\": \"12:00\"},\n      {\"start_time\": \"14:00\", \"end_time\": \"18:00\"}\n    ]\n  }\n}"
+                        },
+                        "url": "{{baseUrl}}/items"
+                    }
+                },
+                {
+                    "name": "List All Items",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items?page=1&limit=10"
+                    }
+                },
+                {
+                    "name": "Filter by Subcategory",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items?subcategory_id={{subcategoryId}}"
+                    }
+                },
+                {
+                    "name": "Filter Bookable Items",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items?is_bookable=true"
+                    }
+                },
+                {
+                    "name": "Search Items",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items?search=tikka"
+                    }
+                },
+                {
+                    "name": "Get Item by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items/{{itemId}}"
+                    }
+                },
+                {
+                    "name": "⭐ Get Price (Tax Inheritance)",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items/{{itemId}}/price?quantity=2"
+                    }
+                },
+                {
+                    "name": "Get Item with Addons",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/items/{{itemId}}/with-addons"
+                    }
+                },
+                {
+                    "name": "Update Item",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"description\": \"Updated description\",\n  \"pricing_details\": {\"static_price\": 280}\n}"
+                        },
+                        "url": "{{baseUrl}}/items/{{itemId}}"
+                    }
+                },
+                {
+                    "name": "Delete Item",
+                    "request": {
+                        "method": "DELETE",
+                        "url": "{{baseUrl}}/items/{{itemId}}"
+                    }
+                }
+            ]
+        },
+        {
+            "name": "📅 Bookings",
+            "item": [
+                {
+                    "name": "Get Available Slots",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings/available-slots/{{itemId}}?date=2026-01-20"
+                    }
+                },
+                {
+                    "name": "Create Booking",
+                    "event": [
+                        {
+                            "listen": "test",
+                            "script": {
+                                "exec": [
+                                    "if (pm.response.code === 201) {",
+                                    "  pm.collectionVariables.set('bookingId', pm.response.json().data._id);",
+                                    "  console.log('✅ Booking ID:', pm.response.json().data._id);",
+                                    "}"
+                                ]
+                            }
+                        }
+                    ],
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"item_id\": \"{{itemId}}\",\n  \"user_email\": \"john.doe@example.com\",\n  \"user_name\": \"John Doe\",\n  \"user_phone\": \"+1234567890\",\n  \"date\": \"2026-01-20\",\n  \"start_time\": \"09:00\",\n  \"end_time\": \"12:00\",\n  \"notes\": \"Team meeting - Need projector\"\n}"
+                        },
+                        "url": "{{baseUrl}}/bookings"
+                    }
+                },
+                {
+                    "name": "Create Conflicting Booking ❌",
+                    "request": {
+                        "method": "POST",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"item_id\": \"{{itemId}}\",\n  \"user_email\": \"jane.smith@example.com\",\n  \"user_name\": \"Jane Smith\",\n  \"date\": \"2026-01-20\",\n  \"start_time\": \"10:00\",\n  \"end_time\": \"13:00\",\n  \"notes\": \"This should fail - overlaps with first booking\"\n}"
+                        },
+                        "url": "{{baseUrl}}/bookings"
+                    }
+                },
+                {
+                    "name": "List All Bookings",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings?page=1&limit=10"
+                    }
+                },
+                {
+                    "name": "Filter by Item",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings?item_id={{itemId}}"
+                    }
+                },
+                {
+                    "name": "Filter by User Email",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings?user_email=john.doe@example.com"
+                    }
+                },
+                {
+                    "name": "Filter by Status",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings?status=confirmed"
+                    }
+                },
+                {
+                    "name": "Filter by Date Range",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings?date_from=2026-01-01&date_to=2026-01-31"
+                    }
+                },
+                {
+                    "name": "Get Booking by ID",
+                    "request": {
+                        "method": "GET",
+                        "url": "{{baseUrl}}/bookings/{{bookingId}}"
+                    }
+                },
+                {
+                    "name": "Update Booking Status",
+                    "request": {
+                        "method": "PUT",
+                        "header": [
+                            {
+                                "key": "Content-Type",
+                                "value": "application/json"
+                            }
+                        ],
+                        "body": {
+                            "mode": "raw",
+                            "raw": "{\n  \"status\": \"confirmed\",\n  \"notes\": \"Confirmed by admin - All equipment ready\"\n}"
+                        },
+                        "url": "{{baseUrl}}/bookings/{{bookingId}}"
+                    }
+                },
+                {
+                    "name": "Cancel Booking",
+                    "request": {
+                        "method": "POST",
+                        "header": [],
+                        "url": "{{baseUrl}}/bookings/{{bookingId}}/cancel"
+                    }
+                }
+            ]
+        }
+    ]
+}
